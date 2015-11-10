@@ -9,6 +9,8 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
+import org.rogotulka.trader.api.model.CurrencyInfo;
+import org.rogotulka.trader.api.model.CurrencyListInfo;
 import org.rogotulka.trader.api.request.CurrencyListRequest;
 import org.rogotulka.trader.api.request.CurrencyMatchRequest;
 import org.rogotulka.trader.api.request.Request;
