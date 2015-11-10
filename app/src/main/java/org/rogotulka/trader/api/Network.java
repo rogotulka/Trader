@@ -9,9 +9,9 @@ class Network {
 
     private static final int TIMEOUT = 20000;
     private static final String METHOD_GET = "GET";
-    private HttpURLConnection connection;
+    private static HttpURLConnection connection;
 
-    public InputStream getInputStream(String urlString) throws IOException {
+    public static InputStream getInputStream(String urlString) throws IOException {
         URL url = new URL(urlString);
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("User-Agent", "Chrome 41.0.2228.0");
@@ -21,7 +21,7 @@ class Network {
         return connection.getInputStream();
     }
 
-    public void close() {
+    public static void close() {
         if (connection != null) {
             connection.disconnect();
         }
