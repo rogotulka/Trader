@@ -3,14 +3,13 @@ package org.rogotulka.trader.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TraderDataSource {
-    private SQLiteDatabase database;
+
     private TraderDBHelper dbHelper;
     private String[] allColumns = {TraderDBHelper.COLUMN_ID,
             TraderDBHelper.COLUMN_TO_CURRENCY, TraderDBHelper.COLUMN_FROM_CURRENCY, TraderDBHelper.COLUMN_VALUE};
@@ -19,15 +18,9 @@ public class TraderDataSource {
         dbHelper = new TraderDBHelper(context);
     }
 
-    public void open() throws SQLException {
-        database = dbHelper.getWritableDatabase();
-    }
-
-    public void close() {
-        dbHelper.close();
-    }
 
     public TraderInfo createTraderInfo(String fromCurrency, String toCurrency, double value) {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put(TraderDBHelper.COLUMN_FROM_CURRENCY, fromCurrency);
         values.put(TraderDBHelper.COLUMN_TO_CURRENCY, toCurrency);
@@ -44,13 +37,14 @@ public class TraderDataSource {
     }
 
     public void deleteTraderRow(TraderInfo traderRow) {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
         long id = traderRow.getId();
-        System.out.println("Comment deleted with id: " + id);
         database.delete(TraderDBHelper.TABLE_TRADER, TraderDBHelper.COLUMN_ID
                 + " = " + id, null);
     }
 
     public List<TraderInfo> getAllTraderRows() {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
         List<TraderInfo> traderRows = new ArrayList<TraderInfo>();
 
         Cursor cursor = database.query(TraderDBHelper.TABLE_TRADER,

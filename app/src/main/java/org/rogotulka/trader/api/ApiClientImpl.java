@@ -78,6 +78,21 @@ class ApiClientImpl implements ApiClient {
                 .appendPath(PATH_API)
                 .appendPath(METHOD_LIVE)
                 .appendQueryParameter(PARAM_ACCESS_KEY_NAME, API_KEY);
+        //// TODO: 11.11.15 rewrite
+        String currencyList = "";
+        if (request.getToCurrency() != null) {
+            for (String currency : request.getToCurrency()) {
+                if (currencyList.isEmpty()) {
+                    currencyList.concat(currency);
+                } else {
+                    currencyList.concat("," + currency);
+                }
+            }
+        }
+
+        if (!currencyList.isEmpty()) {
+            builder.appendQueryParameter("currencies", currencyList);
+        }
 
         try {
             InputStream response = Network.getInputStream(builder.build().toString());
