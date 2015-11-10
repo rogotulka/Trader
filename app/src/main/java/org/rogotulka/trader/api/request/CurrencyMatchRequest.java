@@ -1,6 +1,6 @@
 package org.rogotulka.trader.api.request;
 
-import org.rogotulka.trader.model.CurrencyInfo;
+import org.rogotulka.trader.api.model.CurrencyInfo;
 
 import java.util.List;
 

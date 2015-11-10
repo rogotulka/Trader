@@ -4,10 +4,10 @@ import android.test.AndroidTestCase;
 
 import org.rogotulka.trader.api.ApiClient;
 import org.rogotulka.trader.api.ApiClientProvider;
+import org.rogotulka.trader.api.model.CurrencyInfo;
+import org.rogotulka.trader.api.model.CurrencyListInfo;
 import org.rogotulka.trader.api.request.CurrencyListRequest;
 import org.rogotulka.trader.api.request.CurrencyMatchRequest;
-import org.rogotulka.trader.model.CurrencyInfo;
-import org.rogotulka.trader.model.CurrencyListInfo;
 
 import java.io.IOException;
 

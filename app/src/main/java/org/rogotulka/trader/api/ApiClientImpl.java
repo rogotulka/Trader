@@ -12,8 +12,6 @@ import com.google.gson.JsonParseException;
 import org.rogotulka.trader.api.request.CurrencyListRequest;
 import org.rogotulka.trader.api.request.CurrencyMatchRequest;
 import org.rogotulka.trader.api.request.Request;
-import org.rogotulka.trader.model.CurrencyInfo;
-import org.rogotulka.trader.model.CurrencyListInfo;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package org.rogotulka.trader.model;
+package org.rogotulka.trader.api.model;
 
 import com.google.gson.annotations.SerializedName;
 

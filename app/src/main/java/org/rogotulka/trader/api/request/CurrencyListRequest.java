@@ -1,6 +1,6 @@
 package org.rogotulka.trader.api.request;
 
-import org.rogotulka.trader.model.CurrencyListInfo;
+import org.rogotulka.trader.api.model.CurrencyListInfo;
 
 public class CurrencyListRequest implements Request<CurrencyListInfo> {
 
