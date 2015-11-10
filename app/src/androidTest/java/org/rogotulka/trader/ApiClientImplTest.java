@@ -18,6 +18,9 @@ public class ApiClientImplTest  extends AndroidTestCase {
         CurrencyMatchRequest currencyMatchRequest = new CurrencyMatchRequest();
         CurrencyInfo currencyInfo = apiClient.execute(currencyMatchRequest);
         assertNotNull(currencyInfo);
-        assertNotNull(currencyInfo.);
+        assertNotNull(currencyInfo.getQuotes());
+        assertNotNull(currencyInfo.getDate());
+        assertNotNull(currencyInfo.isSuccess());
+        assertNotNull(currencyInfo.getSource());
     }
 }
