@@ -1,6 +1,6 @@
 package org.rogotulka.trader.db;
 
-public class TraderRow {
+public class TraderInfo {
 
     private long id;
     private String fromCurrency;

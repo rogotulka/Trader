@@ -4,6 +4,8 @@ import org.rogotulka.trader.api.ApiClient;
 import org.rogotulka.trader.api.model.CurrencyListInfo;
 import org.rogotulka.trader.api.request.CurrencyListRequest;
 import org.rogotulka.trader.api.request.CurrencyMatchRequest;
+import org.rogotulka.trader.db.TraderDataSource;
+import org.rogotulka.trader.db.TraderInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,9 +16,11 @@ import java.util.Map;
 class LogicImpl implements Logic {
 
     private ApiClient mApiClient;
+    private TraderDataSource mTraderDataSource;
 
-    public LogicImpl(ApiClient apiClient) {
+    public LogicImpl(ApiClient apiClient, TraderDataSource traderDataSource) {
         mApiClient = apiClient;
+        mTraderDataSource = traderDataSource;
     }
 
     @Override
@@ -44,5 +48,15 @@ class LogicImpl implements Logic {
             //todo
         }
         return currencyMap;
+    }
+
+    @Override
+    public List<TraderInfo> getTradersInfoList() {
+        return mTraderDataSource.getAllTraderRows();
+    }
+
+    @Override
+    public void addTraderInfo(String fromCurrency, String toCurrency, double value) {
+        mTraderDataSource.createTraderInfo(fromCurrency, toCurrency, value);
     }
 }

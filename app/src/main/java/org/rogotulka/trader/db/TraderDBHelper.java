@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class TraderDBHelper extends SQLiteOpenHelper {
+class TraderDBHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_TRADER = "trader";
     public static final String COLUMN_ID = "_id";
