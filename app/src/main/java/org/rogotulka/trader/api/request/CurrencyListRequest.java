@@ -1,8 +1,8 @@
 package org.rogotulka.trader.api.request;
 
-import java.util.Set;
+import org.rogotulka.trader.model.CurrencyListInfo;
 
-public class CurrencyListRequest implements Request<Set<String>> {
+public class CurrencyListRequest implements Request<CurrencyListInfo> {
 
     @Override
     public String toString() {

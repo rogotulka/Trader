@@ -7,9 +7,9 @@ import org.rogotulka.trader.api.ApiClientProvider;
 import org.rogotulka.trader.api.request.CurrencyListRequest;
 import org.rogotulka.trader.api.request.CurrencyMatchRequest;
 import org.rogotulka.trader.model.CurrencyInfo;
+import org.rogotulka.trader.model.CurrencyListInfo;
 
 import java.io.IOException;
-import java.util.Set;
 
 public class ApiClientImplTest  extends AndroidTestCase {
 
@@ -27,7 +27,9 @@ public class ApiClientImplTest  extends AndroidTestCase {
     public void testApiClientCurrencyListRequest() throws IOException, InterruptedException {
         ApiClient apiClient = ApiClientProvider.getApiClient();
         CurrencyListRequest currencyListRequest = new CurrencyListRequest();
-        Set<String> currencies = apiClient.execute(currencyListRequest);
-        assertNotNull(currencies);
+        CurrencyListInfo currencyListInfo = apiClient.execute(currencyListRequest);
+        assertNotNull(currencyListInfo);
+        assertNotNull(currencyListInfo.isSuccess());
+        assertNotNull(currencyListInfo.getCurrencies());
     }
 }

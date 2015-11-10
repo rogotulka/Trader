@@ -7,14 +7,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
 
 import org.rogotulka.trader.api.request.CurrencyListRequest;
 import org.rogotulka.trader.api.request.CurrencyMatchRequest;
 import org.rogotulka.trader.api.request.Request;
 import org.rogotulka.trader.model.CurrencyInfo;
+import org.rogotulka.trader.model.CurrencyListInfo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +21,6 @@ import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 class ApiClientImpl implements ApiClient {
 
@@ -50,9 +48,9 @@ class ApiClientImpl implements ApiClient {
             }
         });
 
-        mMap.put(CurrencyListRequest.class, new RequestExecutor<CurrencyListRequest, Set<String>>() {
+        mMap.put(CurrencyListRequest.class, new RequestExecutor<CurrencyListRequest, CurrencyListInfo>() {
             @Override
-            public Set<String> execute(CurrencyListRequest request) throws IOException {
+            public CurrencyListInfo execute(CurrencyListRequest request) throws IOException {
                 return getCurrencyList(request);
             }
         });
@@ -93,10 +91,10 @@ class ApiClientImpl implements ApiClient {
         return currencyInfo;
     }
 
-    private Set<String> getCurrencyList(CurrencyListRequest request) {
-        Map<String, String> currencies = new HashMap<>();
+    private CurrencyListInfo getCurrencyList(CurrencyListRequest request) {
+        CurrencyListInfo currencyListInfo = new CurrencyListInfo();
         if (request == null) {
-            return currencies.keySet();
+            return currencyListInfo;
         }
 
         Uri.Builder builder = new Uri.Builder();
@@ -108,17 +106,14 @@ class ApiClientImpl implements ApiClient {
 
         try {
             InputStream response = Network.getInputStream(builder.build().toString());
-            JsonObject jsonObject = mGson.fromJson(Utils.getStringFromInputStream(response), JsonObject.class);
-            currencies = mGson.fromJson(((JsonObject) jsonObject.get("currencies")),
-                    new TypeToken<Map<String, String>>() {
-                    }.getType());
+            currencyListInfo = mGson.fromJson(Utils.getStringFromInputStream(response), CurrencyListInfo.class);
         } catch (IOException e) {
             //NOP
         } finally {
             Network.close();
         }
 
-        return currencies.keySet();
+        return currencyListInfo;
     }
 
     private Gson initGson() {
