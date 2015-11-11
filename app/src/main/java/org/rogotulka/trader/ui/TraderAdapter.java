@@ -52,6 +52,14 @@ public class TraderAdapter extends RecyclerView.Adapter<TraderAdapter.TraderInfo
 
     }
 
+    public TraderInfo getTraderInfo(int position) {
+        if (mTraderInfoList != null) {
+            return mTraderInfoList.get(position);
+        }
+
+        return null;
+    }
+
     public static class TraderInfoViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
         TextView currency;
         TextView value;

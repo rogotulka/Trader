@@ -59,4 +59,9 @@ class LogicImpl implements Logic {
     public void addTraderInfo(String fromCurrency, String toCurrency, Double value) {
         mTraderDataSource.createTraderInfo(fromCurrency, toCurrency, value);
     }
+
+    @Override
+    public void deleteTraderInfo(TraderInfo traderInfo) {
+        mTraderDataSource.deleteTraderRow(traderInfo);
+    }
 }

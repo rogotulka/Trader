@@ -22,13 +22,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks, OnStartDragListener {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks, OnStartDragListener, DeleteListener {
 
     public static final int REQUEST_CODE_ADD = 1;
     public static final String FROM_CURRENCY = "from_currency";
     public static final String TO_CURRENCY = "to_currency";
     private static final int LOADER_TRADER_INFO = 0;
     private static final int LOADER_CURRENCY_INFO = 1;
+
+    private static final int LOADER_DELETE_CURRENCY_INFO = 2;
+    private static final String TRADER_INFO = "traider_info";
     private Toolbar vToolbar;
     private RecyclerView vRecyclerView;
     private Button vAdd;
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
         vRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new TraderAdapter(this, null);
-        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(mAdapter);
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(mAdapter, this);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(vRecyclerView);
 
@@ -94,8 +97,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 };
             }
 
+            case LOADER_DELETE_CURRENCY_INFO: {
+                if (args == null) {
+                    throw new IllegalStateException("Illegal params for loader LOADER_CURRENCY_INFO");
+                }
+                return new AsyncTaskLoader<Void>(getApplicationContext()) {
+                    @Override
+                    public Void loadInBackground() {
+                        TraderInfo traderInfo = new TraderInfo();
+                        traderInfo = args.getParcelable(TRADER_INFO);
+                        mLogic.deleteTraderInfo(traderInfo);
+                        return null;
+                    }
+                };
+            }
+
             case LOADER_CURRENCY_INFO: {
-                if (args != null) {
+                if (args == null) {
                     throw new IllegalStateException("Illegal params for loader LOADER_CURRENCY_INFO");
                 }
                 return new AsyncTaskLoader<Map<String, Double>>(getApplicationContext()) {
@@ -129,6 +147,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 break;
             }
 
+            case LOADER_DELETE_CURRENCY_INFO: {
+                break;
+            }
+
             case LOADER_CURRENCY_INFO: {
                 break;
             }
@@ -147,5 +169,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         mItemTouchHelper.startDrag(viewHolder);
+    }
+
+    @Override
+    public void itemDeleted(int pos) {
+        TraderInfo traderInfo = mAdapter.getTraderInfo(pos);
+        Bundle bundle = null;
+        if (traderInfo != null) {
+            bundle = new Bundle();
+            bundle.putParcelable(TRADER_INFO, traderInfo);
+        }
+
+        getLoaderManager().initLoader(LOADER_DELETE_CURRENCY_INFO, bundle, this).forceLoad();
     }
 }

@@ -12,8 +12,11 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     private final ItemTouchHelperAdapter mAdapter;
 
-    public ItemTouchHelperCallback(ItemTouchHelperAdapter adapter) {
+    private final DeleteListener mDeleteListener;
+
+    public ItemTouchHelperCallback(ItemTouchHelperAdapter adapter, DeleteListener deleteListener) {
         mAdapter = adapter;
+        mDeleteListener = deleteListener;
     }
 
     @Override
@@ -49,6 +52,7 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int i) {
         // Notify the adapter of the dismissal
         mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
+        mDeleteListener.itemDeleted(viewHolder.getAdapterPosition());
     }
 
     @Override

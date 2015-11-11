@@ -14,4 +14,6 @@ public interface Logic {
     List<TraderInfo> getTradersInfoList();
 
     void addTraderInfo(String fromCurrency, String toCurrency, Double value);
+
+    void deleteTraderInfo(TraderInfo traderInfo);
 }
