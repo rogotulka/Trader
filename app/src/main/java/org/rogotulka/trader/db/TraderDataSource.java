@@ -12,7 +12,7 @@ public class TraderDataSource {
 
     private TraderDBHelper dbHelper;
     private String[] allColumns = {TraderDBHelper.COLUMN_ID,
-            TraderDBHelper.COLUMN_TO_CURRENCY, TraderDBHelper.COLUMN_FROM_CURRENCY, TraderDBHelper.COLUMN_VALUE};
+            TraderDBHelper.COLUMN_FROM_CURRENCY, TraderDBHelper.COLUMN_TO_CURRENCY, TraderDBHelper.COLUMN_VALUE};
 
     public TraderDataSource(Context context) {
         dbHelper = new TraderDBHelper(context);
