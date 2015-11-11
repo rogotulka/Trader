@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.rogotulka.trader.R;
 import org.rogotulka.trader.TraderApplication;
@@ -19,7 +20,7 @@ public class AddCurrencyActivity extends AppCompatActivity implements LoaderMana
 
     private static final int REQUEST_CODE_CHOOSE = 0;
     public static final String TO_CURRENCY = "to_currency";
-    private static final int LOADER_ADD_PAIR_CURRENCY = 0;
+    private static final int LOADER_ADD_PAIR_CURRENCY = 3;
     private Toolbar vToolbar;
     private Button vToCurrency;
     private Button vSavePairCurrency;
@@ -52,12 +53,17 @@ public class AddCurrencyActivity extends AppCompatActivity implements LoaderMana
         vSavePairCurrency.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!mFromCurrency.isEmpty() && !mToCurrency.isEmpty()) {
+                    getLoaderManager().initLoader(LOADER_ADD_PAIR_CURRENCY, null, AddCurrencyActivity.this).forceLoad();
+                } else {
+                    Toast.makeText(AddCurrencyActivity.this, "choose from & to currency", Toast.LENGTH_LONG);
+                }
 
             }
         });
 
         mLogic = ((TraderApplication) getApplication()).getLogic();
-        getLoaderManager().initLoader(LOADER_ADD_PAIR_CURRENCY, null, this).forceLoad();
+
 
     }
 
