@@ -24,8 +24,7 @@ public class TraderAdapter extends RecyclerView.Adapter<TraderAdapter.TraderInfo
 
     @Override
     public TraderInfoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trade_list, null);
-
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trade_list, parent, false);
         TraderInfoViewHolder viewHolder = new TraderInfoViewHolder(view);
         return viewHolder;
     }
