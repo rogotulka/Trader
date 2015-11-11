@@ -19,7 +19,7 @@ class TraderDBHelper extends SQLiteOpenHelper {
             + TABLE_TRADER + "(" + COLUMN_ID
             + " integer primary key autoincrement, " + COLUMN_FROM_CURRENCY
             + " text not null, " + COLUMN_TO_CURRENCY
-            + " text not null, " + COLUMN_VALUE
+            + " text , " + COLUMN_VALUE
             + " real not null);";
 
     public TraderDBHelper(Context context) {

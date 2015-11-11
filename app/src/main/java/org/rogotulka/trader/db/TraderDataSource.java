@@ -19,12 +19,15 @@ public class TraderDataSource {
     }
 
 
-    public TraderInfo createTraderInfo(String fromCurrency, String toCurrency, double value) {
+    public TraderInfo createTraderInfo(String fromCurrency, String toCurrency, Double value) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put(TraderDBHelper.COLUMN_FROM_CURRENCY, fromCurrency);
         values.put(TraderDBHelper.COLUMN_TO_CURRENCY, toCurrency);
-        values.put(TraderDBHelper.COLUMN_VALUE, value);
+        if (value != null && value > 0) {
+            values.put(TraderDBHelper.COLUMN_VALUE, value);
+        }
+
         long insertId = database.insert(TraderDBHelper.TABLE_TRADER, null,
                 values);
         Cursor cursor = database.query(TraderDBHelper.TABLE_TRADER,

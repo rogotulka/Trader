@@ -4,6 +4,5 @@
     <string name="info_add_new_pair_currency">To add a new currency pair select currencies below.</string>
     <string name="example_add_new_pair_currency"><![CDATA[For example: USD => RUB]]></string>
     <string name="arrow_add_new_pair_currency"><![CDATA[=>]]></string>
-    <string name="text_from_add_new_pair_currency">USD</string>
     <string name="title_activity_choose_currency">Currencies</string>
 </resources>

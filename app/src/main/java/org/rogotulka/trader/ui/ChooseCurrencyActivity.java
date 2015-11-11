@@ -2,12 +2,15 @@ package org.rogotulka.trader.ui;
 
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -37,8 +40,18 @@ public class ChooseCurrencyActivity extends AppCompatActivity implements LoaderM
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         vCurrencyList = (ListView) findViewById(R.id.list_currencies);
+        vCurrencyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String toCurrency = mAdapter.getItem(position);
+                Intent intent = new Intent(getApplicationContext(), AddCurrencyActivity.class);
+                intent.putExtra(AddCurrencyActivity.TO_CURRENCY, toCurrency);
+                setResult(RESULT_OK, intent);
+                finish();
+                //startActivity(intent);
+            }
+        });
         vSearch = (EditText) findViewById(R.id.currency_search);
-
         vSearch.addTextChangedListener(
                 new TextWatcher() {
                     @Override

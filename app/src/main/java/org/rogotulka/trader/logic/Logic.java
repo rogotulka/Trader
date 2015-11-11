@@ -13,5 +13,5 @@ public interface Logic {
 
     List<TraderInfo> getTradersInfoList();
 
-    void addTraderInfo(String fromCurrency, String toCurrency, double value);
+    void addTraderInfo(String fromCurrency, String toCurrency, Double value);
 }
