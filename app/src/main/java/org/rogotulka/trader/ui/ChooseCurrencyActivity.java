@@ -14,11 +14,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.rogotulka.trader.R;
 import org.rogotulka.trader.TraderApplication;
 import org.rogotulka.trader.logic.Logic;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ChooseCurrencyActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
@@ -82,7 +84,19 @@ public class ChooseCurrencyActivity extends AppCompatActivity implements LoaderM
                 return new AsyncTaskLoader<List<String>>(getApplicationContext()) {
                     @Override
                     public List<String> loadInBackground() {
-                        return mLogic.getCurrenciesList();
+                        try {
+                            return mLogic.getCurrenciesList();
+                        } catch (IOException e) {
+                            ChooseCurrencyActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "can't update currency list", Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                        }
+
+                        return null;
                     }
                 };
             }

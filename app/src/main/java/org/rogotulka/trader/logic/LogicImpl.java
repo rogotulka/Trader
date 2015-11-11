@@ -9,7 +9,6 @@ import org.rogotulka.trader.db.TraderInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,29 +23,20 @@ class LogicImpl implements Logic {
     }
 
     @Override
-    public List<String> getCurrenciesList() {
+    public List<String> getCurrenciesList() throws IOException {
         CurrencyListRequest currencyListRequest = new CurrencyListRequest();
         List<String> currencyList = new ArrayList<>();
-        try {
-            CurrencyListInfo currencyListInfo = mApiClient.execute(currencyListRequest);
-            currencyList.addAll(currencyListInfo.getCurrencies().keySet());
-        } catch (IOException e) {
-            //todo
-        }
+        CurrencyListInfo currencyListInfo = mApiClient.execute(currencyListRequest);
+        currencyList.addAll(currencyListInfo.getCurrencies().keySet());
         return currencyList;
     }
 
     @Override
-    public Map<String, Double> getCurrencyInfo(String fromCurrency, List<String> toCurrency) {
+    public Map<String, Double> getCurrencyInfo(String fromCurrency, List<String> toCurrency) throws IOException {
         CurrencyMatchRequest currencyMatchRequest = new CurrencyMatchRequest();
         currencyMatchRequest.setFromCurrency(fromCurrency);
         currencyMatchRequest.setToCurrency(toCurrency);
-        Map<String, Double> currencyMap = new HashMap<>();
-        try {
-            currencyMap = mApiClient.execute(currencyMatchRequest).getQuotes();
-        } catch (IOException e) {
-            //todo
-        }
+        Map<String, Double> currencyMap = mApiClient.execute(currencyMatchRequest).getQuotes();
         return currencyMap;
     }
 

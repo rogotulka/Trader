@@ -66,7 +66,7 @@ class ApiClientImpl implements ApiClient {
         return (ResponseType) mMap.get(request.getClass()).execute(request);
     }
 
-    private CurrencyInfo getCurrencyInfo(CurrencyMatchRequest request) {
+    private CurrencyInfo getCurrencyInfo(CurrencyMatchRequest request) throws IOException {
         CurrencyInfo currencyInfo = new CurrencyInfo();
         if (request == null) {
             return currencyInfo;
@@ -82,8 +82,6 @@ class ApiClientImpl implements ApiClient {
         try {
             InputStream response = Network.getInputStream(builder.build().toString());
             currencyInfo = mGson.fromJson(Utils.getStringFromInputStream(response), CurrencyInfo.class);
-        } catch (IOException e) {
-            //NOP
         } finally {
             Network.close();
         }
@@ -91,7 +89,7 @@ class ApiClientImpl implements ApiClient {
         return currencyInfo;
     }
 
-    private CurrencyListInfo getCurrencyList(CurrencyListRequest request) {
+    private CurrencyListInfo getCurrencyList(CurrencyListRequest request) throws IOException {
         CurrencyListInfo currencyListInfo = new CurrencyListInfo();
         if (request == null) {
             return currencyListInfo;
@@ -107,8 +105,6 @@ class ApiClientImpl implements ApiClient {
         try {
             InputStream response = Network.getInputStream(builder.build().toString());
             currencyListInfo = mGson.fromJson(Utils.getStringFromInputStream(response), CurrencyListInfo.class);
-        } catch (IOException e) {
-            //NOP
         } finally {
             Network.close();
         }

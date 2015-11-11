@@ -13,12 +13,14 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import org.rogotulka.trader.R;
 import org.rogotulka.trader.TraderApplication;
 import org.rogotulka.trader.db.TraderInfo;
 import org.rogotulka.trader.logic.Logic;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private Logic mLogic;
     private TraderAdapter mAdapter;
     private ItemTouchHelper mItemTouchHelper;
+    private Handler mHandler;
+    private Runnable mRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,18 +69,36 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mLogic = ((TraderApplication) getApplication()).getLogic();
 
 
-        final Handler h = new Handler();
+        mHandler = new Handler();
         final int delay = 20000;
 
-        h.post(new Runnable() {
+        mRunnable = new Runnable() {
             public void run() {
                 getLoaderManager().initLoader(LOADER_TRADER_INFO, null, MainActivity.this).forceLoad();
                 getLoaderManager().initLoader(LOADER_CURRENCY_INFO, null, MainActivity.this).forceLoad();
-                h.postDelayed(this, delay);
+                mHandler.postDelayed(this, delay);
             }
-        });
+        };
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        resumeRefresh();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pauseRefresh();
+    }
+
+    private void pauseRefresh() {
+        mHandler.removeCallbacks(mRunnable);
+    }
+
+    private void resumeRefresh() {
+        mHandler.post(mRunnable);
     }
 
 
@@ -124,7 +146,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     @Override
                     public Map<String, Double> loadInBackground() {
                         //take common list for all currency
-                        return mLogic.getCurrencyInfo(null, null);
+                        try {
+                            return mLogic.getCurrencyInfo(null, null);
+                        } catch (IOException e) {
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "can't update currency info", Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                        }
+
+                        return null;
                     }
                 };
             }
@@ -144,9 +178,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 if (data != null) {
                     List<TraderInfo> traderInfoList = (List<TraderInfo>) data;
                     mAdapter.setTraderInfoList(traderInfoList);
-                    vRecyclerView.setAdapter(mAdapter);
+
 
                 }
+                vRecyclerView.setAdapter(mAdapter);
                 break;
             }
 
@@ -155,7 +190,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
 
             case LOADER_CURRENCY_INFO: {
-                mAdapter.setCurrencyMap((Map<String, Double>) data);
+                if (data != null) {
+                    mAdapter.setCurrencyMap((Map<String, Double>) data);
+                }
                 break;
             }
 
@@ -183,7 +220,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             bundle = new Bundle();
             bundle.putParcelable(TRADER_INFO, traderInfo);
         }
-
+        pauseRefresh();
+        getLoaderManager().destroyLoader(LOADER_CURRENCY_INFO);
+        getLoaderManager().destroyLoader(LOADER_TRADER_INFO);
         getLoaderManager().initLoader(LOADER_DELETE_CURRENCY_INFO, bundle, this).forceLoad();
+        resumeRefresh();
     }
 }
