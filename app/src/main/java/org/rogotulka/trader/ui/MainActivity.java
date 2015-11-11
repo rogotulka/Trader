@@ -24,11 +24,10 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
 
     public static final int REQUEST_CODE_ADD = 1;
-    private static final int LOADER_TRADER_INFO = 0;
-    private static final int LOADER_CURRENCY_INFO = 1;
     public static final String FROM_CURRENCY = "from_currency";
     public static final String TO_CURRENCY = "to_currency";
-
+    private static final int LOADER_TRADER_INFO = 0;
+    private static final int LOADER_CURRENCY_INFO = 1;
     private Toolbar vToolbar;
     private RecyclerView vRecyclerView;
     private Button vAdd;
@@ -47,14 +46,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         vAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ChooseCurrencyActivity.class);
+                Intent intent = new Intent(MainActivity.this, AddCurrencyActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_ADD);
             }
         });
         vRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        getLoaderManager().initLoader(LOADER_TRADER_INFO, null, this).forceLoad();
+
 
         mLogic = ((TraderApplication) getApplication()).getLogic();
+        getLoaderManager().initLoader(LOADER_TRADER_INFO, null, this).forceLoad();
 
     }
 
@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 return new AsyncTaskLoader<List<TraderInfo>>(getApplicationContext()) {
                     @Override
                     public List<TraderInfo> loadInBackground() {
-
                         return mLogic.getTradersInfoList();
                     }
                 };
@@ -112,10 +111,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader loader, Object data) {
-        if (data != null) {
-            List<TraderInfo> traderInfoList = (List<TraderInfo>) data;
-            vRecyclerView.setAdapter(new TraderAdapter(this, traderInfoList));
+
+        switch (loader.getId()) {
+            case LOADER_TRADER_INFO: {
+                if (data != null) {
+                    List<TraderInfo> traderInfoList = (List<TraderInfo>) data;
+                    vRecyclerView.setAdapter(new TraderAdapter(this, traderInfoList));
+                }
+                break;
+            }
+
+            case LOADER_CURRENCY_INFO: {
+                break;
+            }
+
+            default:
+                throw new IllegalStateException("Unknown loader");
         }
+
     }
 
     @Override
