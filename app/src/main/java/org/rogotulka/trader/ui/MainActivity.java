@@ -37,9 +37,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        vToolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setContentView(R.layout.activity_trader_list);
+        vToolbar = (Toolbar) findViewById(R.id.tool_bar_trader_list);
         setSupportActionBar(vToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         vRecyclerView = (RecyclerView) findViewById(R.id.trader_info_list);
         vAdd = (Button) findViewById(R.id.add_trader_info);
