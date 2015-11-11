@@ -5,6 +5,7 @@ import android.content.AsyncTaskLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +19,6 @@ import org.rogotulka.trader.TraderApplication;
 import org.rogotulka.trader.db.TraderInfo;
 import org.rogotulka.trader.logic.Logic;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,13 +57,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
         vRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new TraderAdapter(this, null);
+        mAdapter = new TraderAdapter(this, null, null);
         ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(mAdapter, this);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(vRecyclerView);
 
         mLogic = ((TraderApplication) getApplication()).getLogic();
-        getLoaderManager().initLoader(LOADER_TRADER_INFO, null, this).forceLoad();
+
+
+        final Handler h = new Handler();
+        final int delay = 20000;
+
+        h.post(new Runnable() {
+            public void run() {
+                getLoaderManager().initLoader(LOADER_TRADER_INFO, null, MainActivity.this).forceLoad();
+                getLoaderManager().initLoader(LOADER_CURRENCY_INFO, null, MainActivity.this).forceLoad();
+                h.postDelayed(this, delay);
+            }
+        });
+
 
     }
 
@@ -73,13 +85,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (requestCode == REQUEST_CODE_ADD) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                if (data == null) {
-                    return;
-                }
-                String fromCurrency = data.getStringExtra(FROM_CURRENCY);
-                String toCurrency = data.getStringExtra(TO_CURRENCY);
-
-                getLoaderManager().initLoader(LOADER_CURRENCY_INFO, data.getExtras(), this).forceLoad();
+                getLoaderManager().initLoader(LOADER_CURRENCY_INFO, null, this).forceLoad();
+                getLoaderManager().initLoader(LOADER_TRADER_INFO, null, this).forceLoad();
             }
         }
     }
@@ -113,15 +120,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
 
             case LOADER_CURRENCY_INFO: {
-                if (args == null) {
-                    throw new IllegalStateException("Illegal params for loader LOADER_CURRENCY_INFO");
-                }
                 return new AsyncTaskLoader<Map<String, Double>>(getApplicationContext()) {
                     @Override
                     public Map<String, Double> loadInBackground() {
-                        List<String> toCurrencyList = new ArrayList<>();
-                        toCurrencyList.add(args.getString(TO_CURRENCY));
-                        return mLogic.getCurrencyInfo(args.getString(FROM_CURRENCY), toCurrencyList);
+                        //take common list for all currency
+                        return mLogic.getCurrencyInfo(null, null);
                     }
                 };
             }
@@ -140,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             case LOADER_TRADER_INFO: {
                 if (data != null) {
                     List<TraderInfo> traderInfoList = (List<TraderInfo>) data;
-                    mAdapter = new TraderAdapter(this, traderInfoList);
+                    mAdapter.setTraderInfoList(traderInfoList);
                     vRecyclerView.setAdapter(mAdapter);
 
                 }
@@ -152,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
 
             case LOADER_CURRENCY_INFO: {
+                mAdapter.setCurrencyMap((Map<String, Double>) data);
                 break;
             }
 

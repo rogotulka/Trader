@@ -25,7 +25,7 @@ public class AddCurrencyActivity extends AppCompatActivity implements LoaderMana
     private Button vToCurrency;
     private Button vSavePairCurrency;
     private TextView vFromCurrency;
-    private String mToCurrency;
+    private String mToCurrency = "";
     private String mFromCurrency = "USD";
     private Logic mLogic;
 
@@ -55,8 +55,12 @@ public class AddCurrencyActivity extends AppCompatActivity implements LoaderMana
             public void onClick(View v) {
                 if (!mFromCurrency.isEmpty() && !mToCurrency.isEmpty()) {
                     getLoaderManager().initLoader(LOADER_ADD_PAIR_CURRENCY, null, AddCurrencyActivity.this).forceLoad();
+                    //startActivity();
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    setResult(RESULT_OK, intent);
+                    finish();
                 } else {
-                    Toast.makeText(AddCurrencyActivity.this, "choose from & to currency", Toast.LENGTH_LONG);
+                    Toast.makeText(AddCurrencyActivity.this, "choose from & to currency", Toast.LENGTH_LONG).show();
                 }
 
             }

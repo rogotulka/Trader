@@ -12,15 +12,18 @@ import org.rogotulka.trader.R;
 import org.rogotulka.trader.db.TraderInfo;
 
 import java.util.List;
+import java.util.Map;
 
 public class TraderAdapter extends RecyclerView.Adapter<TraderAdapter.TraderInfoViewHolder> implements ItemTouchHelperAdapter {
 
+    private Map<String, Double> mCurrencyMap;
     private List<TraderInfo> mTraderInfoList;
     private Context mContext;
 
-    public TraderAdapter(Context context, List<TraderInfo> traderInfoList) {
+    public TraderAdapter(Context context, List<TraderInfo> traderInfoList, Map<String, Double> currencyMap) {
         mTraderInfoList = traderInfoList;
         mContext = context;
+        mCurrencyMap = currencyMap;
     }
 
     @Override
@@ -34,7 +37,11 @@ public class TraderAdapter extends RecyclerView.Adapter<TraderAdapter.TraderInfo
     public void onBindViewHolder(TraderInfoViewHolder holder, int position) {
         TraderInfo traderInfo = mTraderInfoList.get(position);
         holder.currency.setText(traderInfo.getFromCurrency() + "=>" + traderInfo.getToCurrency());
-        holder.value.setText(Double.toString(traderInfo.getValue()));
+        if (mCurrencyMap != null) {
+            holder.value.setText(Double.toString(mCurrencyMap.get(traderInfo.getFromCurrency() + traderInfo.getToCurrency())));
+        } else {
+            holder.value.setText("--.--");
+        }
     }
 
     @Override
@@ -58,6 +65,16 @@ public class TraderAdapter extends RecyclerView.Adapter<TraderAdapter.TraderInfo
         }
 
         return null;
+    }
+
+    public void setCurrencyMap(Map<String, Double> currencyMap) {
+        mCurrencyMap = currencyMap;
+        notifyDataSetChanged();
+    }
+
+    public void setTraderInfoList(List<TraderInfo> traderInfoList) {
+        mTraderInfoList = traderInfoList;
+        notifyDataSetChanged();
     }
 
     public static class TraderInfoViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
