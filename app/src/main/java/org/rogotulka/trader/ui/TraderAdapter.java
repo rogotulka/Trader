@@ -1,6 +1,7 @@
 package org.rogotulka.trader.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,7 @@ import org.rogotulka.trader.db.TraderInfo;
 
 import java.util.List;
 
-public class TraderAdapter extends RecyclerView.Adapter<TraderAdapter.TraderInfoViewHolder> {
+public class TraderAdapter extends RecyclerView.Adapter<TraderAdapter.TraderInfoViewHolder> implements ItemTouchHelperAdapter {
 
     private List<TraderInfo> mTraderInfoList;
     private Context mContext;
@@ -41,7 +42,17 @@ public class TraderAdapter extends RecyclerView.Adapter<TraderAdapter.TraderInfo
         return (null != mTraderInfoList ? mTraderInfoList.size() : 0);
     }
 
-    public static class TraderInfoViewHolder extends RecyclerView.ViewHolder {
+
+    @Override
+    public void onItemDismiss(int position) {
+        if (mTraderInfoList != null) {
+            mTraderInfoList.remove(position);
+            notifyItemRemoved(position);
+        }
+
+    }
+
+    public static class TraderInfoViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
         TextView currency;
         TextView value;
 
@@ -49,6 +60,16 @@ public class TraderAdapter extends RecyclerView.Adapter<TraderAdapter.TraderInfo
             super(itemView);
             currency = (TextView) itemView.findViewById(R.id.currency);
             value = (TextView) itemView.findViewById(R.id.value);
+        }
+
+        @Override
+        public void onItemSelected() {
+            itemView.setBackgroundColor(Color.LTGRAY);
+        }
+
+        @Override
+        public void onItemClear() {
+            itemView.setBackgroundResource(R.drawable.background_rectangle);
         }
     }
 

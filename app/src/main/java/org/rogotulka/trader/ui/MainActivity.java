@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.Button;
 
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks, OnStartDragListener {
 
     public static final int REQUEST_CODE_ADD = 1;
     public static final String FROM_CURRENCY = "from_currency";
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private RecyclerView vRecyclerView;
     private Button vAdd;
     private Logic mLogic;
+    private TraderAdapter mAdapter;
+    private ItemTouchHelper mItemTouchHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +54,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
         vRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        mAdapter = new TraderAdapter(this, null);
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(mAdapter);
+        mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(vRecyclerView);
 
         mLogic = ((TraderApplication) getApplication()).getLogic();
         getLoaderManager().initLoader(LOADER_TRADER_INFO, null, this).forceLoad();
@@ -116,7 +122,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             case LOADER_TRADER_INFO: {
                 if (data != null) {
                     List<TraderInfo> traderInfoList = (List<TraderInfo>) data;
-                    vRecyclerView.setAdapter(new TraderAdapter(this, traderInfoList));
+                    mAdapter = new TraderAdapter(this, traderInfoList);
+                    vRecyclerView.setAdapter(mAdapter);
+
                 }
                 break;
             }
@@ -134,5 +142,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader loader) {
         //NOP
+    }
+
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        mItemTouchHelper.startDrag(viewHolder);
     }
 }
